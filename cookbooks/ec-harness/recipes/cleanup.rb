@@ -6,6 +6,18 @@ ec_harness_private_chef_ha "destroy_#{node['harness']['default_package']}_on_#{n
   action :destroy
 end
 
+if node['harness']['provider'] == 'ec2'
+  ruby_block 'free_elastic_ip' do
+    aws_access_key_id = node['cloud']['aws_access_key_id']
+    aws_secret_access_key = node['cloud']['aws_secret_access_key']
+    region = node['cloud']['region']
+    compute = Fog::Compute.new( :aws_access_key_id => aws_access_key_id,
+      :aws_secret_access_key => aws_secret_access_key,
+      :region => region, :provider => 'AWS')
+    compute.release_address(node['private-chef']['backend_vip']['ipaddress'])
+  end
+end
+
 if node['harness']['provider'] == 'ec2' && node['harness']['ec2']['backend_storage_type'] == 'ebs'
 
   ruby_block 'destroy_ebs_volume' do
