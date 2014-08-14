@@ -9,6 +9,10 @@ class GenerateVagrantConfig < GenerateConfig
         :box_url => "http://opscode-vm-bento.s3.amazonaws.com/vagrant/virtualbox/opscode_#{@options.platform}_chef-provisionerless.box" }
   end
 
+  def ha_backend_ip
+    "33.33.33.20"
+  end
+
   def generate_backend(n)
     {
       :hostname => "backend#{n}.opscode.piab",

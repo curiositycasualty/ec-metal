@@ -1,5 +1,4 @@
 # encoding: utf-8
-
 class FogHelper
 
   attr_accessor :ami, :region
@@ -30,7 +29,12 @@ class FogHelper
       :provider => provider)
     backend1 = compute.servers.get(server_id)
     myeni = backend1.network_interfaces.first['networkInterfaceId']
+    if ipaddress.nil?
+      response = compute.allocate_address(domain => 'vpc')
+      ipaddress = response.body['publicIp']
+    end
     compute.assign_private_ip_addresses(myeni, 'PrivateIpAddresses' => [ipaddress], 'AllowReassignment' => true)
+    ipaddress
   end
 
   def get_aws

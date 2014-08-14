@@ -81,6 +81,10 @@ class GenerateEc2Config < GenerateConfig
     @config['ec2_options']['keypair_name'] = ENV['ECM_KEYPAIR_NAME'] unless ENV['ECM_KEYPAIR_NAME'].nil?
   end
 
+  def ha_backend_ip
+    nil
+  end
+
   def generate_backend(n)
     {
       :hostname => "backend#{n}.opscode.piab",

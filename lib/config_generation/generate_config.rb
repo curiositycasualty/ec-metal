@@ -16,6 +16,7 @@ class GenerateConfig
 
 
   def modify_config()
+    @config["provider"] = @options.provider
     set_provider_data()
 
     # TODO(jmink) handle upgrade packages correctly
@@ -80,7 +81,8 @@ class GenerateConfig
 
       options[:num_backends].times do |n|
         backend = generate_backend(n)
-        backend[:bootstrap] = true if n == 0 @config[:layout][:backends]["backend#{n}"] = backend
+        backend[:bootstrap] = true if n == 0
+        @config[:layout][:backends]["backend#{n}"] = backend
       end
       options[:num_frontends].times do |n|
         @config[:layout][:frontends]["frontend#{n}"] = generate_frontend(n)
@@ -88,7 +90,7 @@ class GenerateConfig
 
       if options[:num_backends] > 1
         vip = { :hostname => "backend.opscode.piab",
-                :ipaddress => "33.33.33.20" }
+                :ipaddress => ha_backend_ip }
       else
         backend_name = @config[:layout][:backends].keys.first
         vip = @config[:layout][:backends][backend_name]
@@ -103,6 +105,10 @@ class GenerateConfig
        }
 
       provider_specific_config_modification()
+  end
+
+  def ha_backend_ip
+    raise "Unimplemented.  Should be overwritten in child class"
   end
 
   # @returns a hash which represents the nth backend
