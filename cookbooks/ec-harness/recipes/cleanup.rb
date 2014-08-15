@@ -6,7 +6,7 @@ ec_harness_private_chef_ha "destroy_#{node['harness']['default_package']}_on_#{n
   action :destroy
 end
 
-if node['harness']['provider'] == 'ec2'
+if node['harness']['provider'] == 'ec2' && node['cloud']
   ruby_block 'free_elastic_ip' do
     aws_access_key_id = node['cloud']['aws_access_key_id']
     aws_secret_access_key = node['cloud']['aws_secret_access_key']
